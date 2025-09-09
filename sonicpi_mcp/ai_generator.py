@@ -155,7 +155,18 @@ Return only the Sonic Pi code, no explanations.
                 temperature=0.7
             )
             
-            return response.choices[0].message.content.strip()
+            content = response.choices[0].message.content.strip()
+            
+            # Remove markdown code blocks if present
+            if content.startswith("```ruby"):
+                content = content[7:]  # Remove ```ruby
+            elif content.startswith("```"):
+                content = content[3:]   # Remove ```
+            
+            if content.endswith("```"):
+                content = content[:-3]  # Remove trailing ```
+            
+            return content.strip()
         
         except Exception as e:
             print(f"AI generation failed: {e}")

@@ -2,7 +2,8 @@
     "name": "sonicpi",
     "description": "Sonic Pi MCP Server - Local-first control interface for Sonic Pi",
     "version": "0.1.0",
-    "command": ["python", "-m", "sonicpi_mcp"],
+    "command": ["python3", "-m", "sonicpi_mcp"],
+    "cwd": "/Users/pranavpradhan/Documents/sonicpi-mcp",
     "tools": [
         {
             "name": "run_code",

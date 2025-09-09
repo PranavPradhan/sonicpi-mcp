@@ -10,7 +10,6 @@ from pythonosc.udp_client import SimpleUDPClient
 from pythonosc.osc_message_builder import OscMessageBuilder
 
 from .config import OscConfig
-from .logging import logger
 
 
 class OscClient:
@@ -39,14 +38,14 @@ class OscClient:
                     match = re.search(r'127\.0\.0\.1:(\d+)', line)
                     if match:
                         port = int(match.group(1))
-                        logger.log("INFO", f"Discovered Sonic Pi port: {port}")
+                        print(f"INFO: Discovered Sonic Pi port: {port}")
                         return port
             
-            logger.log("WARNING", "Could not discover Sonic Pi port")
+            print("WARNING: Could not discover Sonic Pi port")
             return None
             
         except (subprocess.TimeoutExpired, subprocess.CalledProcessError, FileNotFoundError):
-            logger.log("ERROR", "Failed to discover Sonic Pi port")
+            print("ERROR: Failed to discover Sonic Pi port")
             return None
     
     def _init_client(self):
@@ -57,10 +56,10 @@ class OscClient:
         if discovered_port and discovered_port != self._last_discovered_port:
             self.config.port = discovered_port
             self._last_discovered_port = discovered_port
-            logger.log("INFO", f"Using discovered port: {discovered_port}")
+            print(f"INFO: Using discovered port: {discovered_port}")
         
         self._client = SimpleUDPClient(self.config.host, self.config.port)
-        logger.log("INFO", f"OSC client initialized - {self.config.host}:{self.config.port}")
+        print(f"INFO: OSC client initialized - {self.config.host}:{self.config.port}")
     
     def send_message(self, address: str, *args) -> None:
         """Send an OSC message to the specified address."""
@@ -82,9 +81,9 @@ class OscClient:
                     builder.add_arg(arg)
             msg = builder.build()
             self._client.send(msg)
-            logger.log("DEBUG", f"Sent OSC message {address} to {self.config.host}:{self.config.port}")
+            print(f"DEBUG: Sent OSC message {address} to {self.config.host}:{self.config.port}")
         except Exception as e:
-            logger.log("ERROR", f"Failed to send OSC message to {address}: {e}")
+            print(f"ERROR: Failed to send OSC message to {address}: {e}")
             # Try to rediscover port and retry once
             self._init_client()
             raise
@@ -107,38 +106,38 @@ class OscClient:
             cue_msg = cue_builder.build()
             cue_client.send(cue_msg)
             
-            logger.log("INFO", f"Sent code to Sonic Pi via /mcp/code (job {job_id})")
+            print(f"INFO: Sent code to Sonic Pi via /mcp/code (job {job_id})")
             return job_id
         except Exception as e:
-            logger.log("ERROR", f"Failed to run code: {e}")
+            print(f"ERROR: Failed to run code: {e}")
             raise
         finally:
             elapsed = (time.time() - start_time) * 1000
-            logger.log("INFO", f"Code execution took {elapsed:.2f}ms")
+            print(f"INFO: Code execution took {elapsed:.2f}ms")
     
     def stop_all(self) -> None:
         """Stop all running jobs."""
         try:
             self.send_message(self.config.stop_all_path)
-            logger.log("INFO", "Sent stop-all command")
+            print("INFO: Sent stop-all command")
         except Exception as e:
-            logger.log("ERROR", f"Failed to stop all jobs: {e}")
+            print(f"ERROR: Failed to stop all jobs: {e}")
             raise
     
     def set_bpm(self, bpm: float) -> None:
         """Set the global BPM."""
         try:
             self.send_message(self.config.set_bpm_path, bpm)
-            logger.log("INFO", f"Set BPM to {bpm}")
+            print(f"INFO: Set BPM to {bpm}")
         except Exception as e:
-            logger.log("ERROR", f"Failed to set BPM: {e}")
+            print(f"ERROR: Failed to set BPM: {e}")
             raise
     
     def cue(self, tag: str) -> None:
         """Send a cue message."""
         try:
             self.send_message(self.config.cue_path, tag)
-            logger.log("INFO", f"Sent cue: {tag}")
+            print(f"INFO: Sent cue: {tag}")
         except Exception as e:
-            logger.log("ERROR", f"Failed to send cue: {e}")
+            print(f"ERROR: Failed to send cue: {e}")
             raise
