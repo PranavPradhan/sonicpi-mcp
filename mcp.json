@@ -1,0 +1,138 @@
+{
+    "name": "sonicpi",
+    "description": "Sonic Pi MCP Server - Local-first control interface for Sonic Pi",
+    "version": "0.1.0",
+    "command": ["python", "-m", "sonicpi_mcp"],
+    "tools": [
+        {
+            "name": "run_code",
+            "description": "Run Sonic Pi code",
+            "schema": {
+                "type": "object",
+                "required": ["source"],
+                "properties": {
+                    "source": {
+                        "type": "string",
+                        "description": "Sonic Pi source code to execute"
+                    }
+                }
+            }
+        },
+        {
+            "name": "stop_all",
+            "description": "Stop all running jobs",
+            "schema": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "set_bpm",
+            "description": "Set the global BPM",
+            "schema": {
+                "type": "object",
+                "required": ["bpm"],
+                "properties": {
+                    "bpm": {
+                        "type": "number",
+                        "description": "Beats per minute",
+                        "minimum": 1
+                    }
+                }
+            }
+        },
+        {
+            "name": "cue",
+            "description": "Send a cue message",
+            "schema": {
+                "type": "object",
+                "required": ["tag"],
+                "properties": {
+                    "tag": {
+                        "type": "string",
+                        "description": "Cue tag to trigger"
+                    }
+                }
+            }
+        },
+        {
+            "name": "tail_logs",
+            "description": "Get recent log entries",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "since_ms": {
+                        "type": "number",
+                        "description": "Only return logs after this timestamp"
+                    }
+                }
+            }
+        },
+        {
+            "name": "diagnose",
+            "description": "Run diagnostics to check Sonic Pi connection",
+            "schema": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "generate_music",
+            "description": "Generate Sonic Pi code from natural language description",
+            "schema": {
+                "type": "object",
+                "required": ["request"],
+                "properties": {
+                    "request": {
+                        "type": "string",
+                        "description": "Natural language description of desired music (e.g., 'create a rock drum beat')"
+                    }
+                }
+            }
+        },
+        {
+            "name": "list_patterns",
+            "description": "List all available music patterns",
+            "schema": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "get_pattern",
+            "description": "Get a specific music pattern",
+            "schema": {
+                "type": "object",
+                "required": ["category", "pattern_name"],
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "description": "Pattern category (drums, bass, chords)"
+                    },
+                    "pattern_name": {
+                        "type": "string",
+                        "description": "Name of the pattern"
+                    },
+                    "bpm": {
+                        "type": "number",
+                        "description": "Optional BPM override"
+                    }
+                }
+            }
+        },
+        {
+            "name": "create_and_play",
+            "description": "Generate music from natural language and immediately play it",
+            "schema": {
+                "type": "object",
+                "required": ["request"],
+                "properties": {
+                    "request": {
+                        "type": "string",
+                        "description": "Natural language description of desired music (e.g., 'create a rock drum beat and play it')"
+                    }
+                }
+            }
+        }
+    ]
+}

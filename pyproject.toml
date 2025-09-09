@@ -1,0 +1,29 @@
+[project]
+name = "sonicpi-mcp"
+version = "0.1.0"
+description = "Sonic Pi MCP Server - Local-first control interface for Sonic Pi"
+requires-python = ">=3.8"
+dependencies = [
+    "python-osc>=1.8.1",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "openai>=1.0.0"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I"]
+ignore = []
+
+[tool.mypy]
+python_version = "3.8"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
