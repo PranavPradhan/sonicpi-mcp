@@ -126,7 +126,7 @@ class MusicAI:
         try:
             # Create a prompt for Sonic Pi code generation
             prompt = f"""
-Generate Sonic Pi code for this music request: "{request}"
+Generate professional Sonic Pi code for this music request: "{request}"
 
 Musical elements detected:
 - Genre: {elements.get('genre', 'not specified')}
@@ -134,26 +134,67 @@ Musical elements detected:
 - BPM: {elements.get('bpm', 'not specified')}
 - Mood: {elements.get('mood', 'not specified')}
 
-Requirements:
-1. Generate valid Sonic Pi Ruby code
-2. Use live_loop structures for continuous patterns
-3. Include appropriate synths and samples
-4. Make it musically interesting
-5. Keep it concise but complete
-6. Use proper timing with sleep commands
+Elite Professional Requirements:
+1. Generate world-class, multi-layered Sonic Pi Ruby code with studio-quality production
+2. Use 5+ live_loop structures for complex, sophisticated arrangements
+3. Include advanced synths (:blade, :dsaw, :fm, :prophet, :tb303, :saw, :piano, etc.)
+4. Add professional effects chains (reverb, echo, distortion, filters, compression)
+5. Create sophisticated musical progressions with advanced harmony
+6. Use proper jazz/classical chord voicings and walking bass lines
+7. Include dynamic amplitude, effect control, and musical expression
+8. Make it sound like a professional studio production
+9. Use precise timing with sleep commands and musical phrasing
+10. Add complex musical structure, form, and development
+
+Elite Techniques to Master:
+- Multiple live_loop layers (drums, bass, melody, pads, effects, percussion)
+- Complex with_fx chains for professional studio sound
+- Advanced chord progressions (ii-V-I, jazz standards, modal harmony)
+- Sophisticated sample manipulation with rate, amp, and filter parameters
+- Dynamic control, musical expression, and human-like performance
+- Advanced rhythmic patterns (swing, polyrhythms, complex time signatures)
+- Professional arrangement techniques (intro, verse, chorus, bridge, outro)
+- Musical development and variation throughout the composition
 
 Return only the Sonic Pi code, no explanations.
 """
             
-            response = self.openai_client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a Sonic Pi expert who generates creative, musical code."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=1000,
-                temperature=0.7
-            )
+            # Try the most advanced models first, with fallbacks
+            models_to_try = ["gpt-5", "gpt-4o", "gpt-4-turbo", "gpt-4"]
+            response = None
+            
+            for model in models_to_try:
+                try:
+                    # Use max_completion_tokens for GPT-5, max_tokens for others
+                    if model == "gpt-5":
+                        response = self.openai_client.chat.completions.create(
+                            model=model,
+                            messages=[
+                                {"role": "system", "content": "You are an elite Sonic Pi music producer and composer with deep expertise in music theory, jazz harmony, electronic music production, and advanced programming. You create sophisticated, multi-layered musical compositions that rival professional studio productions. Your code demonstrates mastery of: complex chord progressions, advanced synthesis techniques, professional effects chains, dynamic musical arrangements, and sophisticated rhythmic patterns. Generate code that sounds like it was created by a world-class music producer."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            max_completion_tokens=4000,  # GPT-5 uses max_completion_tokens
+                            temperature=1.0   # GPT-5 only supports default temperature
+                        )
+                    else:
+                        response = self.openai_client.chat.completions.create(
+                            model=model,
+                            messages=[
+                                {"role": "system", "content": "You are an elite Sonic Pi music producer and composer with deep expertise in music theory, jazz harmony, electronic music production, and advanced programming. You create sophisticated, multi-layered musical compositions that rival professional studio productions. Your code demonstrates mastery of: complex chord progressions, advanced synthesis techniques, professional effects chains, dynamic musical arrangements, and sophisticated rhythmic patterns. Generate code that sounds like it was created by a world-class music producer."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            max_tokens=4000,  # Other models use max_tokens
+                            temperature=0.9   # High creativity for musical variety and sophistication
+                        )
+                    print(f"Successfully used {model} for AI generation")
+                    break
+                except Exception as e:
+                    print(f"Failed to use {model}: {e}")
+                    continue
+            
+            if not response:
+                print("All AI models failed, falling back to patterns")
+                return None
             
             content = response.choices[0].message.content.strip()
             

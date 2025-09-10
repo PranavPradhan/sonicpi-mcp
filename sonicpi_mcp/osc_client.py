@@ -98,7 +98,7 @@ class OscClient:
             formatted_source = source.strip()
             
             # Send to the cue port (4560) which Sonic Pi definitely listens to
-            cue_client = SimpleUDPClient("192.168.2.62", 4560)
+            cue_client = SimpleUDPClient(self.config.host, 4560)
             
             # Send as a cue message that can be received by sync in Sonic Pi
             cue_builder = OscMessageBuilder(address="/mcp/code")
